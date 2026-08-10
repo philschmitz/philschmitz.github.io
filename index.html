@@ -228,8 +228,16 @@
   .skill-col li:last-child { border-bottom: none; }
 
   /* Prinzipien */
-  .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  .principle { border-top: 3px solid var(--accent); padding-top: 16px; }
+  .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .principle {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 24px; transition: border-color .25s, transform .25s;
+  }
+  .principle:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .principle .pn {
+    display: block; font-family: var(--mono); font-size: .75rem;
+    color: var(--accent); letter-spacing: .14em; margin-bottom: 10px;
+  }
   .principle h3 { font-size: 1rem; }
   .principle p { font-size: .9rem; color: var(--ink-soft); }
 
@@ -619,6 +627,7 @@
     <p class="section-sub reveal">Drei Prinzipien, die sich durch alles ziehen, was ich baue.</p>
     <div class="principles">
       <div class="principle reveal">
+        <span class="pn">01</span>
         <h3>Beweis statt Behauptung</h3>
         <p>
           Ein Bericht ist kein Nachweis. Geprüft wird am Code, mit eigenen
@@ -626,6 +635,7 @@
         </p>
       </div>
       <div class="principle reveal">
+        <span class="pn">02</span>
         <h3>Dokumentation als Werkzeug</h3>
         <p>
           183 protokollierte Runden, 31 begründete Entscheidungen. Was nicht
@@ -633,6 +643,7 @@
         </p>
       </div>
       <div class="principle reveal">
+        <span class="pn">03</span>
         <h3>Gegen Fehlanreize entwerfen</h3>
         <p>
           Jedes System wird von seinen Nutzern optimiert. Gute Architektur
