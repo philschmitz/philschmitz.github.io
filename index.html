@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phil Schmitz | Softwareentwicklung & KI-Systeme, Münster</title>
+<meta name="description" content="Phil Schmitz: Webentwickler, KI-System-Architekt, verfügbar ab Anfang 2027 im Raum Münster. Referenzprojekte: das Multi-Agenten-System Mentat und das RAG-Produkt Kanzlei Brain.">
+<style>
+  :root, [data-theme="dark"] {
+    --bg: #070c0b;
+    --bg-elev: #0c1412;
+    --surface: #101a18;
+    --ink: #e9f0ee;
+    --ink-soft: #92a5a0;
+    --accent: #2fd6c3;
+    --accent-2: #6ee7a0;
+    --accent-dim: rgba(47, 214, 195, .12);
+    --glow: rgba(47, 214, 195, .30);
+    --line: rgba(255, 255, 255, .08);
+    --card-hover: #14211e;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+  [data-theme="light"] {
+    --bg: #faf9f7;
+    --bg-elev: #f3f1ed;
+    --surface: #ffffff;
+    --ink: #1c1c1a;
+    --ink-soft: #55534e;
+    --accent: #0e5f5b;
+    --accent-2: #1a7f4e;
+    --accent-dim: rgba(14, 95, 91, .08);
+    --glow: rgba(14, 95, 91, .18);
+    --line: #e4e1db;
+    --card-hover: #ffffff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.65;
+    font-size: 17px;
+    transition: background .35s ease, color .35s ease;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--accent); color: var(--bg); }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+
+  /* Scroll progress */
+  #progress {
+    position: fixed; top: 0; left: 0; height: 2px; width: 0;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    z-index: 50; transition: width .1s linear;
+  }
+
+  /* Nav */
+  nav {
+    position: sticky; top: 0; z-index: 40;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 58px; }
+  nav .brand { font-weight: 800; letter-spacing: .06em; font-size: .9rem; }
+  nav .brand em { font-style: normal; color: var(--accent); }
+  nav .right { display: flex; align-items: center; gap: 4px; }
+  nav .links { display: flex; }
+  nav .links a {
+    color: var(--ink-soft); text-decoration: none; font-size: .84rem;
+    padding: 6px 11px; border-radius: 6px; transition: color .15s, background .15s;
+  }
+  nav .links a:hover { color: var(--accent); }
+  nav .links a.active { color: var(--accent); background: var(--accent-dim); }
+  #themeToggle {
+    background: none; border: 1px solid var(--line); color: var(--ink-soft);
+    border-radius: 8px; width: 34px; height: 34px; cursor: pointer; margin-left: 12px;
+    display: grid; place-items: center; transition: color .15s, border-color .15s, transform .3s;
+  }
+  #themeToggle:hover { color: var(--accent); border-color: var(--accent); transform: rotate(15deg); }
+  #themeToggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  [data-theme="dark"] .icon-moon { display: none; }
+  [data-theme="light"] .icon-sun { display: none; }
+
+  /* Hero */
+  header.hero { position: relative; padding: 110px 0 90px; border-bottom: 1px solid var(--line); overflow: hidden; }
+  #net {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    opacity: .55; pointer-events: none;
+  }
+  [data-theme="light"] #net { opacity: .4; }
+  .hero .glow-orb {
+    position: absolute; width: 560px; height: 560px; border-radius: 50%;
+    background: radial-gradient(circle, var(--glow), transparent 65%);
+    top: -220px; right: -160px; pointer-events: none; filter: blur(10px);
+    animation: drift 14s ease-in-out infinite alternate;
+  }
+  @keyframes drift { from { transform: translate(0,0) } to { transform: translate(-50px, 35px) } }
+  .hero .wrap { position: relative; }
+  .kicker {
+    font-family: var(--mono); font-size: .78rem; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 20px;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .kicker::before {
+    content: ""; width: 26px; height: 1px; background: var(--accent);
+    display: inline-block; animation: growline 1s ease .2s both;
+  }
+  @keyframes growline { from { width: 0 } to { width: 26px } }
+  h1 {
+    font-size: clamp(2.4rem, 6.5vw, 3.9rem); line-height: 1.06;
+    letter-spacing: -.025em; font-weight: 800; max-width: 720px;
+  }
+  h1 .grad {
+    background: linear-gradient(92deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero p.lead { margin-top: 24px; font-size: 1.15rem; color: var(--ink-soft); max-width: 640px; }
+  .badges { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .badge {
+    font-size: .82rem; padding: 7px 15px; border-radius: 999px; font-weight: 600;
+    background: var(--accent-dim); color: var(--accent); border: 1px solid transparent;
+  }
+  .badge.outline { background: transparent; border-color: var(--line); color: var(--ink-soft); }
+  .badge .dot {
+    display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent-2); margin-right: 7px; animation: pulse 2.2s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .35 } }
+  .cta { margin-top: 38px; display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .cta a.btn {
+    display: inline-block; background: linear-gradient(92deg, var(--accent), var(--accent-2));
+    color: #06110f; text-decoration: none; padding: 13px 28px; border-radius: 10px;
+    font-weight: 700; font-size: .95rem; transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+  }
+  .cta a.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 34px -8px var(--glow); }
+  .cta a.ghost { color: var(--accent); text-decoration: none; font-weight: 600; font-size: .95rem; }
+  .cta a.ghost:hover { text-decoration: underline; }
+
+  /* Sections */
+  section { padding: 84px 0; border-bottom: 1px solid var(--line); position: relative; }
+  section:last-of-type { border-bottom: none; }
+  .sec-num {
+    font-family: var(--mono); font-size: .75rem; color: var(--accent);
+    letter-spacing: .16em; margin-bottom: 10px;
+  }
+  h2 { font-size: 1.85rem; letter-spacing: -.015em; margin-bottom: 8px; }
+  .section-sub { color: var(--ink-soft); margin-bottom: 40px; max-width: 660px; }
+  h3 { font-size: 1.06rem; margin-bottom: 6px; }
+
+  /* Reveal animation */
+  .reveal { opacity: 0; transform: translateY(22px); transition: opacity .65s ease, transform .65s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* Profil */
+  .profil-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 44px; }
+  .profil-grid p + p { margin-top: 14px; }
+  .profil-grid strong { color: var(--accent); }
+  .fact-list { list-style: none; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 22px; }
+  .fact-list li { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px dashed var(--line); font-size: .92rem; }
+  .fact-list li:last-child { border-bottom: none; }
+  .fact-list .k { color: var(--ink-soft); min-width: 120px; flex-shrink: 0; }
+  .fact-list .v { font-weight: 600; }
+
+  /* Mentat */
+  .role-box {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px; padding: 24px 28px; margin: 30px 0;
+  }
+  .role-box strong { color: var(--accent); }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 34px 0; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 20px 22px; transition: border-color .25s, transform .25s;
+  }
+  .stat:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .stat .num {
+    font-size: 1.7rem; font-weight: 800; letter-spacing: -.02em;
+    background: linear-gradient(92deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .lbl { font-size: .8rem; color: var(--ink-soft); margin-top: 3px; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 24px;
+    transition: border-color .25s, transform .25s, box-shadow .25s, background .25s;
+  }
+  .card:hover {
+    border-color: var(--accent); transform: translateY(-4px);
+    box-shadow: 0 14px 40px -14px var(--glow); background: var(--card-hover);
+  }
+  .card h3 { color: var(--accent); }
+  .card p { font-size: .92rem; color: var(--ink-soft); }
+  .stack-line {
+    margin-top: 30px; font-family: var(--mono); font-size: .8rem; color: var(--ink-soft);
+    background: var(--bg-elev); border: 1px solid var(--line); border-radius: 10px; padding: 15px 19px;
+  }
+  .stack-line .p { color: var(--accent); }
+  .note { margin-top: 20px; font-size: .87rem; color: var(--ink-soft); }
+
+  /* Timeline */
+  .timeline { list-style: none; border-left: 2px solid var(--line); margin-left: 6px; }
+  .timeline li { position: relative; padding: 0 0 38px 32px; }
+  .timeline li:last-child { padding-bottom: 0; }
+  .timeline li::before {
+    content: ""; position: absolute; left: -7px; top: 6px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); border: 3px solid var(--bg);
+    box-shadow: 0 0 12px var(--glow);
+  }
+  .timeline .when { font-family: var(--mono); font-size: .78rem; color: var(--accent); letter-spacing: .06em; }
+  .timeline h3 { margin-top: 3px; }
+  .timeline p { font-size: .93rem; color: var(--ink-soft); max-width: 640px; }
+
+  /* Skills */
+  .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .skill-col {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 24px;
+    transition: border-color .25s, transform .25s;
+  }
+  .skill-col:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .skill-col h3 { color: var(--accent); margin-bottom: 12px; }
+  .skill-col ul { list-style: none; }
+  .skill-col li { font-size: .9rem; padding: 7px 0; border-bottom: 1px dashed var(--line); color: var(--ink-soft); }
+  .skill-col li:last-child { border-bottom: none; }
+
+  /* Prinzipien */
+  .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .principle { border-top: 3px solid var(--accent); padding-top: 16px; }
+  .principle h3 { font-size: 1rem; }
+  .principle p { font-size: .9rem; color: var(--ink-soft); }
+
+  /* Kontakt */
+  #kontakt { text-align: center; }
+  .contact-box { padding: 12px 0 4px; }
+  .contact-box .mail {
+    font-size: clamp(1.3rem, 4.5vw, 2rem); font-weight: 800; letter-spacing: -.015em;
+    background: linear-gradient(92deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-decoration: none;
+  }
+  .contact-box .mail:hover { filter: brightness(1.2); }
+  .contact-box .phone {
+    display: inline-block; margin-top: 14px; font-size: 1.15rem; font-weight: 700;
+    color: var(--accent); text-decoration: none;
+  }
+  .contact-box .phone:hover { text-decoration: underline; }
+  .contact-box p { color: var(--ink-soft); margin-top: 12px; font-size: .95rem; }
+
+  footer {
+    border-top: 1px solid var(--line); padding: 30px 0 44px;
+    font-size: .82rem; color: var(--ink-soft); text-align: center;
+  }
+
+  @media (max-width: 760px) {
+    nav .links { display: none; }
+    .profil-grid, .cards, .skills, .principles { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    header.hero { padding: 72px 0 60px; }
+    section { padding: 56px 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; }
+    #net, .glow-orb { display: none; }
+  }
+
+  @media print {
+    :root, [data-theme="dark"] {
+      --bg: #fff; --bg-elev: #fff; --surface: #fff;
+      --ink: #111; --ink-soft: #444; --accent: #0e5f5b; --accent-2: #0e5f5b;
+      --line: #ccc; --accent-dim: #eee; --glow: transparent;
+    }
+    nav, .cta, #net, .glow-orb, #progress, #themeToggle { display: none !important; }
+    body { font-size: 12px; }
+    section, header.hero { padding: 24px 0; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+    .stat .num, h1 .grad, .contact-box .mail { -webkit-text-fill-color: #0e5f5b; color: #0e5f5b; background: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">PHIL&nbsp;SCHMITZ<em>_</em></div>
+    <div class="right">
+      <div class="links">
+        <a href="#profil">Profil</a>
+        <a href="#mentat">Projekte</a>
+        <a href="#werdegang">Werdegang</a>
+        <a href="#skills">Fähigkeiten</a>
+        <a href="#kontakt">Kontakt</a>
+      </div>
+      <button id="themeToggle" aria-label="Design wechseln" title="Hell/Dunkel umschalten">
+        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <canvas id="net"></canvas>
+  <div class="glow-orb"></div>
+  <div class="wrap">
+    <div class="kicker">Softwareentwicklung · KI-Systeme · Raum Münster</div>
+    <h1 class="reveal">Ich baue Systeme,<br>die sich <span class="grad">beweisen</span> müssen.</h1>
+    <p class="lead reveal">
+      Ich bin 19, habe mich mit 14 als Webentwickler selbstständig gemacht und
+      danach Bank und Bundeswehr von innen gesehen. Mein bisher größtes Projekt:
+      ein Multi-Agenten-System mit 119.000 Zeilen getestetem Python-Code,
+      von mir konzipiert und gesteuert.
+    </p>
+    <div class="badges reveal">
+      <span class="badge"><span class="dot"></span>Verfügbar ab Anfang 2027</span>
+      <span class="badge outline">Offen für Ausbildung &amp; Festanstellung</span>
+      <span class="badge outline">Raum Münster</span>
+    </div>
+    <div class="cta reveal">
+      <a class="btn" href="mailto:philschmitz75@gmail.com">Kontakt aufnehmen</a>
+      <a class="ghost" href="#mentat">Referenzprojekt ansehen ↓</a>
+    </div>
+  </div>
+</header>
+
+<section id="profil">
+  <div class="wrap">
+    <div class="sec-num reveal">01 / PROFIL</div>
+    <h2 class="reveal">Kein klassischer Lebenslauf.<br>Aber ein konsequenter.</h2>
+    <p class="section-sub reveal">Selbstständigkeit, Bank, Bundeswehr: drei Welten in fünf Jahren.</p>
+    <div class="profil-grid">
+      <div class="reveal">
+        <p>
+          Mit 14 habe ich beim Amtsgericht die Teilgeschäftsfähigkeit nach
+          § 112 BGB erwirkt, um ein eigenes Gewerbe führen zu dürfen. Danach
+          habe ich zwei Jahre als Webentwickler und Webdesigner für eigene
+          Kunden gearbeitet. Akquise, Umsetzung, Betreuung: alles selbst.
+        </p>
+        <p>
+          Danach kam die klassische Arbeitswelt: Ausbildung zum Bankkaufmann,
+          anschließend Soldat auf Zeit bei der Bundeswehr. Beides hat mir
+          Disziplin und Prozessverständnis mitgegeben, vor allem aber die
+          Gewissheit, dass mein Platz in der Softwareentwicklung ist.
+        </p>
+        <p>
+          Nebenher ist mein bisher größtes Projekt entstanden:
+          <strong>Mentat</strong>, ein evolutionäres Multi-Agenten-System.
+          Spezifikation, Architektur und Qualitätssicherung liegen komplett bei mir.
+        </p>
+      </div>
+      <div class="reveal">
+        <ul class="fact-list">
+          <li><span class="k">Jahrgang</span><span class="v">2006</span></li>
+          <li><span class="k">Standort</span><span class="v">Raum Münster</span></li>
+          <li><span class="k">Verfügbar</span><span class="v">ab Anfang 2027</span></li>
+          <li><span class="k">Abschluss</span><span class="v">Realschulabschluss (2023)</span></li>
+          <li><span class="k">Sprachen</span><span class="v">Deutsch (Muttersprache), Englisch</span></li>
+          <li><span class="k">Ziel</span><span class="v">Ausbildung Fachinformatiker AE oder Junior-Entwicklung</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="mentat">
+  <div class="wrap">
+    <div class="sec-num reveal">02 / REFERENZPROJEKT</div>
+    <h2 class="reveal">Mentat</h2>
+    <p class="section-sub reveal">
+      Ein Multi-Agenten-System, in dem autonome KI-Agenten sich evolutionär
+      weiterentwickeln: mit Mutation, Selektion und validierten Lessons, die
+      zwischen den Generationen weitergegeben werden. Ein privates
+      Forschungsprojekt, das bewusst nur im Simulationsmodus läuft.
+    </p>
+
+    <div class="role-box reveal">
+      <strong>Meine Rolle, ganz transparent:</strong> Den Produktionscode schreiben
+      KI-Coding-Agents. Ich habe das System entworfen, das sie kontrolliert:
+      Spezifikation in 16 Modulen, 31 dokumentierte Architekturentscheidungen,
+      testgetriebene Abnahme jedes Arbeitspakets mit eigenen Mutationstests,
+      dazu der Betrieb der Sandbox-Infrastruktur. Genau das biete ich an:
+      KI-orchestrierte Entwicklung mit echter Qualitätskontrolle.
+    </div>
+
+    <div class="stats">
+      <div class="stat reveal"><div class="num" data-count="119000" data-suffix="">0</div><div class="lbl">Zeilen Python (52k Produktion, 67k Tests)</div></div>
+      <div class="stat reveal"><div class="num" data-count="2700" data-prefix="~">0</div><div class="lbl">Testfunktionen, CI-pflichtig grün</div></div>
+      <div class="stat reveal"><div class="num" data-count="31">0</div><div class="lbl">Architekturentscheidungen (ADRs)</div></div>
+      <div class="stat reveal"><div class="num" data-count="26">0</div><div class="lbl">Arbeitspakete, 20 abgeschlossen</div></div>
+      <div class="stat reveal"><div class="num" data-count="183">0</div><div class="lbl">dokumentierte Runden im Statusprotokoll</div></div>
+      <div class="stat reveal"><div class="num" data-count="4">0</div><div class="lbl">CI-Gates: ruff · mypy --strict · pytest · Golden-Set</div></div>
+    </div>
+
+    <div class="cards">
+      <div class="card reveal">
+        <h3>Kalibrierungs-Gate für KI-Urteile</h3>
+        <p>
+          Ein Sprachmodell darf erst bewerten, wenn es 100 vorab beurteilte
+          Fälle mit mindestens 80 Prozent Übereinstimmung besteht, dazu eine
+          Diagonalprüfung gegen Immer-gleich-Antworten. Zwei Golden-Sets sind
+          durchgefallen, die Schranke blieb trotzdem stehen. Bestanden hat
+          erst das dritte, mit 97 von 100.
+        </p>
+      </div>
+      <div class="card reveal">
+        <h3>Prompt-Injection strukturell unmöglich</h3>
+        <p>
+          Web-Inhalte erreichen die Agenten als Datentyp, der schlicht keinen
+          Weg in einen Prompt hat: keine String-Konvertierung, ein einziger
+          Ausgang, alles als untrusted markiert. Belegt per Byte-Prüfung des
+          gesamten Requests. Keine Regel, die man umgehen kann, sondern
+          Konstruktion.
+        </p>
+      </div>
+      <div class="card reveal">
+        <h3>Sandbox, die Ausbrüche wirklich hält</h3>
+        <p>
+          Agenten-Code läuft in gVisor auf einem eigenen Linux-Host, 19
+          dokumentierte Ausbruchsversuche wurden abgewehrt. Zweimal hat die
+          Test-Suite dabei falsche Sicherheit aufgedeckt: grüne Wände, die nie
+          geprüft wurden. Danach wurde das Testdesign selbst gehärtet.
+        </p>
+      </div>
+      <div class="card reveal">
+        <h3>Der Maßstab ist unerreichbar</h3>
+        <p>
+          Fitness-Evaluator und Beweisfunktionen liegen außerhalb der
+          Reichweite der Agenten, durchgesetzt auf Datenbank-Rechte-Ebene
+          statt im Applikationscode. Kein Agent kann seinen eigenen Wert
+          deklarieren. Evidenz kommt nur aus unabhängigen externen Quellen.
+        </p>
+      </div>
+    </div>
+
+    <div class="stack-line reveal">
+      <span class="p">Stack:</span> Python 3.12 · uv · Pydantic v2 · FastAPI · PostgreSQL · Alembic ·
+      pytest + hypothesis · ruff · mypy --strict · Docker · gVisor · Hetzner (Ubuntu 24.04)
+    </div>
+    <p class="note reveal">
+      Die vollständige Projektdokumentation (Spezifikation, ADRs,
+      Statusprotokoll) zeige ich gern im Gespräch. Das Repository selbst ist privat.
+    </p>
+  </div>
+</section>
+
+<section id="kanzlei-brain">
+  <div class="wrap">
+    <div class="sec-num reveal">03 / GEMEINSCHAFTSPROJEKT</div>
+    <h2 class="reveal">Obsidian-Brain-AI &amp; Kanzlei Brain</h2>
+    <p class="section-sub reveal">
+      Ein RAG-System über Markdown-Wissensbasen mit CLI, Web-Oberfläche und
+      MCP-Server. Daraus abgeleitet: Kanzlei Brain, ein eigenständiges
+      B2B-Produkt für Rechtsanwaltskanzleien, erzeugt aus derselben Codebasis
+      über ein deklaratives Preset-System.
+    </p>
+
+    <div class="role-box reveal">
+      <strong>Ein Vater-Sohn-Projekt:</strong> Idee, Produktvision und
+      Projektleitung liegen bei meinem Vater. Ich habe mitentwickelt und dabei
+      angewendet und vertieft, was auch Mentat trägt: spezifikationsgetriebene,
+      KI-orchestrierte Entwicklung mit Abnahme-Gates, Regressionstests und
+      ehrlicher Qualitätskontrolle.
+    </div>
+
+    <div class="stats">
+      <div class="stat reveal"><div class="num" data-count="502">0</div><div class="lbl">Commits seit April 2026</div></div>
+      <div class="stat reveal"><div class="num" data-count="53000">0</div><div class="lbl">Zeilen Produktivcode, dazu rund 50.000 Zeilen Tests</div></div>
+      <div class="stat reveal"><div class="num" data-count="58">0</div><div class="lbl">Web-Routen, 3 LLM-Provider, Coverage-Gate 70 %</div></div>
+    </div>
+
+    <div class="cards">
+      <div class="card reveal">
+        <h3>RAG mit Anti-Halluzinations-Design</h3>
+        <p>
+          Hybrid-Suche aus BM25 und Vektor-Embeddings, Reranking und ein
+          Zitat-Verifikationssystem: Jede Antwort verweist auf klickbare
+          Belegstellen im Quelldokument. Findet das System keinen Beleg,
+          sagt es das, statt etwas zu erfinden.
+        </p>
+      </div>
+      <div class="card reveal">
+        <h3>Vom Werkzeug zum Produkt, ohne Fork</h3>
+        <p>
+          Ein Preset-System erzeugt aus derselben Codebasis ein eigenes
+          Kanzlei-Produkt mit eigener Terminologie, Navigation und
+          Compliance-Logik. Das Ursprungsprodukt bleibt als Golden Master
+          unangetastet, nachgewiesen durch Regressionstests bei jeder Änderung.
+        </p>
+      </div>
+      <div class="card reveal">
+        <h3>Compliance technisch umgesetzt</h3>
+        <p>
+          Mandanten-Kollisionsprüfung nach § 43a BRAO, durchgängige
+          KI-Kennzeichnung, Vier-Augen-Freigabe für Fristen, ein Audit-Log
+          ohne Löschmöglichkeit und ein DSGVO-Löschkonzept. Berufsrecht als
+          Code statt als Fußnote.
+        </p>
+      </div>
+      <div class="card reveal">
+        <h3>Eigener Code-Intelligence-Stack</h3>
+        <p>
+          Ein zweiter Analyse-Pfad für Software-Projekte: AST-Parsing mit
+          tree-sitter, Dependency- und Call-Graphen, Contract-Validation an
+          Modulgrenzen. Das System versteht nicht nur Dokumente, sondern
+          auch Code.
+        </p>
+      </div>
+    </div>
+
+    <div class="stack-line reveal">
+      <span class="p">Stack:</span> Python 3.12 · FastAPI · HTMX + SSE · Pydantic v2 ·
+      ChromaDB · BM25 · tree-sitter · MCP · Playwright · pytest · mypy --strict
+    </div>
+  </div>
+</section>
+
+<section id="werdegang">
+  <div class="wrap">
+    <div class="sec-num reveal">04 / WERDEGANG</div>
+    <h2 class="reveal">Werdegang</h2>
+    <p class="section-sub reveal">Auf Umwegen, aber mit Richtung.</p>
+    <ul class="timeline">
+      <li class="reveal">
+        <div class="when">2021–2023</div>
+        <h3>Selbstständiger Webentwickler &amp; Webdesigner</h3>
+        <p>
+          Start mit 14, nachdem mir das Amtsgericht die Teilgeschäftsfähigkeit
+          nach § 112 BGB erteilt hat. Websites für eigene Kunden, von der
+          Akquise über Design und Umsetzung bis zur laufenden Betreuung.
+        </p>
+      </li>
+      <li class="reveal">
+        <div class="when">2023</div>
+        <h3>Realschulabschluss</h3>
+        <p>Mittlerer Schulabschluss, parallel zur Selbstständigkeit.</p>
+      </li>
+      <li class="reveal">
+        <div class="when">2023–2024</div>
+        <h3>Ausbildung zum Bankkaufmann</h3>
+        <p>
+          Bewusst vor dem Abschluss beendet. Kundengeschäft, Compliance und
+          Bankprozesse nehme ich mit, meine Zukunft liegt aber in der
+          Entwicklung, nicht am Schalter.
+        </p>
+      </li>
+      <li class="reveal">
+        <div class="when">07/2024 – Ende 2026</div>
+        <h3>Soldat auf Zeit, Bundeswehr</h3>
+        <p>
+          Verantwortung, Disziplin und Arbeit in sicherheitskritischen
+          Strukturen. Abends und am Wochenende ist nebenbei Mentat entstanden.
+        </p>
+      </li>
+      <li class="reveal">
+        <div class="when">ab 2027</div>
+        <h3>Der nächste Schritt</h3>
+        <p>
+          Ausbildung Fachinformatiker Anwendungsentwicklung (gern verkürzt) oder
+          Junior-Position in der Softwareentwicklung, am liebsten im Raum Münster.
+        </p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-num reveal">05 / FÄHIGKEITEN</div>
+    <h2 class="reveal">Fähigkeiten</h2>
+    <p class="section-sub reveal">Praxis statt Zertifikate. Alles hier lässt sich an konkreten Projekten zeigen.</p>
+    <div class="skills">
+      <div class="skill-col reveal">
+        <h3>Entwicklung &amp; Web</h3>
+        <ul>
+          <li>HTML, CSS, JavaScript</li>
+          <li>Webdesign &amp; Konzeption</li>
+          <li>Python-Ökosystem: FastAPI, Pydantic, pytest</li>
+          <li>PostgreSQL, Alembic</li>
+          <li>Git, CI-Pipelines</li>
+        </ul>
+      </div>
+      <div class="skill-col reveal">
+        <h3>KI-Engineering</h3>
+        <ul>
+          <li>Multi-Agenten-Orchestrierung</li>
+          <li>LLM-Evaluation: Golden Sets, Kalibrierung</li>
+          <li>RAG: Hybrid-Suche, Reranking, Zitat-Verifikation</li>
+          <li>Prompt- &amp; Kontext-Architektur</li>
+          <li>Guardrail- &amp; Anreiz-Design</li>
+          <li>Prompt-Injection-Abwehr</li>
+        </ul>
+      </div>
+      <div class="skill-col reveal">
+        <h3>Qualität &amp; Betrieb</h3>
+        <ul>
+          <li>Testgetriebene Abnahme, Mutationstests</li>
+          <li>Spezifikation &amp; ADRs</li>
+          <li>Linux, Docker, gVisor-Sandboxing</li>
+          <li>Server-Betrieb (Hetzner)</li>
+          <li>Kaufmännisches Grundverständnis (Bank)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="arbeitsweise">
+  <div class="wrap">
+    <div class="sec-num reveal">06 / ARBEITSWEISE</div>
+    <h2 class="reveal">Arbeitsweise</h2>
+    <p class="section-sub reveal">Drei Prinzipien, die sich durch alles ziehen, was ich baue.</p>
+    <div class="principles">
+      <div class="principle reveal">
+        <h3>Beweis statt Behauptung</h3>
+        <p>
+          Ein Bericht ist kein Nachweis. Geprüft wird am Code, mit eigenen
+          Tests, die an der behaupteten Stelle rot werden müssen.
+        </p>
+      </div>
+      <div class="principle reveal">
+        <h3>Dokumentation als Werkzeug</h3>
+        <p>
+          183 protokollierte Runden, 31 begründete Entscheidungen. Was nicht
+          dokumentiert ist, kann niemand prüfen und niemand übernehmen.
+        </p>
+      </div>
+      <div class="principle reveal">
+        <h3>Gegen Fehlanreize entwerfen</h3>
+        <p>
+          Jedes System wird von seinen Nutzern optimiert. Gute Architektur
+          macht den ehrlichen Weg zum einfachsten.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kontakt">
+  <div class="wrap">
+    <div class="sec-num reveal">07 / KONTAKT</div>
+    <h2 class="reveal">Lassen Sie uns sprechen.</h2>
+    <div class="contact-box reveal">
+      <a class="mail" href="mailto:philschmitz75@gmail.com">philschmitz75@gmail.com</a>
+      <br>
+      <a class="phone" href="tel:+4917657870153">+49 176 57870153</a>
+      <p>Raum Münster · verfügbar ab Anfang 2027 · Antwort meist innerhalb von 24 Stunden</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Phil Schmitz · Referenzseite zur Bewerbung · Stand August 2026
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Theme toggle ---------- */
+  var root = document.documentElement;
+  var updateNetColors = function () {};
+  var stored = null;
+  try { stored = localStorage.getItem("ps-theme"); } catch (e) {}
+  if (stored === "light" || stored === "dark") root.setAttribute("data-theme", stored);
+  document.getElementById("themeToggle").addEventListener("click", function () {
+    var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("ps-theme", next); } catch (e) {}
+    updateNetColors();
+  });
+
+  /* ---------- Scroll progress ---------- */
+  var bar = document.getElementById("progress");
+  function onScroll() {
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + "%";
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  /* ---------- Reveal on scroll (staggered) ---------- */
+  var revealEls = document.querySelectorAll(".reveal");
+  if (reduced || !("IntersectionObserver" in window)) {
+    revealEls.forEach(function (el) { el.classList.add("visible"); });
+  } else {
+    var pending = [];
+    var flushTimer = null;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { pending.push(en.target); io.unobserve(en.target); }
+      });
+      if (!flushTimer) {
+        flushTimer = setTimeout(function () {
+          pending.forEach(function (el, i) {
+            el.style.transitionDelay = Math.min(i * 70, 420) + "ms";
+            el.classList.add("visible");
+          });
+          pending = []; flushTimer = null;
+        }, 20);
+      }
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+    revealEls.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ---------- Count-up stats ---------- */
+  var fmt = new Intl.NumberFormat("de-DE");
+  var nums = document.querySelectorAll(".num[data-count]");
+  function setFinal(el) {
+    el.textContent = (el.dataset.prefix || "") + fmt.format(+el.dataset.count) + (el.dataset.suffix || "");
+  }
+  if (reduced || !("IntersectionObserver" in window)) {
+    nums.forEach(setFinal);
+  } else {
+    var seen = new WeakSet();
+    var nio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting || seen.has(en.target)) return;
+        seen.add(en.target); nio.unobserve(en.target);
+        var el = en.target, target = +el.dataset.count, start = null, dur = 1100;
+        function step(ts) {
+          if (!start) start = ts;
+          var p = Math.min((ts - start) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = (el.dataset.prefix || "") + fmt.format(Math.round(target * eased)) + (el.dataset.suffix || "");
+          if (p < 1) requestAnimationFrame(step); else setFinal(el);
+        }
+        requestAnimationFrame(step);
+      });
+    }, { threshold: 0.4 });
+    nums.forEach(function (el) { nio.observe(el); });
+  }
+
+  /* ---------- Active nav link ---------- */
+  var links = document.querySelectorAll("nav .links a");
+  var secs = [];
+  links.forEach(function (a) {
+    var s = document.querySelector(a.getAttribute("href"));
+    if (s) secs.push({ a: a, s: s });
+  });
+  if ("IntersectionObserver" in window) {
+    var sio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          links.forEach(function (l) { l.classList.remove("active"); });
+          var hit = secs.find(function (x) { return x.s === en.target; });
+          if (hit) hit.a.classList.add("active");
+        }
+      });
+    }, { rootMargin: "-35% 0px -55% 0px" });
+    secs.forEach(function (x) { sio.observe(x.s); });
+  }
+
+  /* ---------- Agent network canvas ---------- */
+  var canvas = document.getElementById("net");
+  if (canvas && !reduced) {
+    var ctx = canvas.getContext("2d");
+    var nodes = [], W = 0, H = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var running = true;
+    var col = { node: "47,214,195", line: "47,214,195" };
+
+    updateNetColors = function () {
+      var light = root.getAttribute("data-theme") === "light";
+      col.node = light ? "14,95,91" : "47,214,195";
+      col.line = light ? "14,95,91" : "47,214,195";
+    };
+    updateNetColors();
+
+    function resize() {
+      var r = canvas.parentElement.getBoundingClientRect();
+      W = r.width; H = r.height;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var count = Math.min(Math.floor(W / 26), 46);
+      nodes = [];
+      for (var i = 0; i < count; i++) {
+        nodes.push({
+          x: Math.random() * W, y: Math.random() * H,
+          vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35,
+          r: 1.2 + Math.random() * 1.6
+        });
+      }
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    function tick() {
+      if (!running) return;
+      ctx.clearRect(0, 0, W, H);
+      var linkDist = 130;
+      for (var i = 0; i < nodes.length; i++) {
+        var n = nodes[i];
+        n.x += n.vx; n.y += n.vy;
+        if (n.x < -10) n.x = W + 10; if (n.x > W + 10) n.x = -10;
+        if (n.y < -10) n.y = H + 10; if (n.y > H + 10) n.y = -10;
+      }
+      for (var a = 0; a < nodes.length; a++) {
+        for (var b = a + 1; b < nodes.length; b++) {
+          var dx = nodes[a].x - nodes[b].x, dy = nodes[a].y - nodes[b].y;
+          var d2 = dx * dx + dy * dy;
+          if (d2 < linkDist * linkDist) {
+            var alpha = (1 - Math.sqrt(d2) / linkDist) * 0.35;
+            ctx.strokeStyle = "rgba(" + col.line + "," + alpha.toFixed(3) + ")";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(nodes[a].x, nodes[a].y);
+            ctx.lineTo(nodes[b].x, nodes[b].y);
+            ctx.stroke();
+          }
+        }
+      }
+      for (var j = 0; j < nodes.length; j++) {
+        var m = nodes[j];
+        ctx.fillStyle = "rgba(" + col.node + ",.75)";
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      requestAnimationFrame(tick);
+    }
+
+    var hio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting && !running) { running = true; tick(); }
+        else if (!en.isIntersecting) { running = false; }
+      });
+    });
+    hio.observe(canvas);
+    tick();
+  }
+})();
+</script>
+
+</body>
+</html>
