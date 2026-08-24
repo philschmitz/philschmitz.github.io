@@ -95,13 +95,14 @@
 <header class="hero">
   <div class="wrap">
     <div class="kicker">Referenzprojekt · Deep Dive</div>
-    <h1>Mentat: ein selbst-evolvierendes Multi-Agenten-System mit Governance-Kern</h1>
+    <h1>Mentat: viele KI-Agenten, ein System, das sie unter Kontrolle hält</h1>
     <p>
-      Mentat ist ein privates Forschungs- und Ingenieursprojekt: eine Population autonomer
-      KI-Agenten, die in mehreren Domänen Werte erwirtschaften soll und sich dabei evolutionär
-      weiterentwickelt. Der eigentliche Kern des Projekts ist aber nicht die Evolution, sondern
-      ihre Beherrschbarkeit: Das gesamte Design richtet sich gegen vier benannte Failure-Modes,
-      nämlich Reward-Hacking, abergläubisches Lernen, Monokultur und unkontrolliert wachsende Komplexität.
+      Mentat ist mein privates Forschungsprojekt: eine Gruppe von KI-Agenten, die selbstständig
+      Aufgaben erledigen und über Generationen besser werden. Das Besondere ist nicht, dass sie
+      sich verbessern, sondern dass sie dabei unter Kontrolle bleiben. Das komplette Design
+      richtet sich gegen vier typische Fehlerquellen: Agenten, die den Maßstab austricksen statt
+      Leistung zu bringen. Lernen aus Zufallstreffern. Alle kopieren den Gewinner. Und ein
+      System, das schneller wächst, als man es versteht.
     </p>
   </div>
 </header>
@@ -111,55 +112,54 @@
     <h2>Einblicke in die Owner-Oberfläche</h2>
     <p class="muted">
       Fünf Ansichten aus dem laufenden System. Betriebsmodus und Not-Aus stehen auf jeder
-      Seite in der Kopfzeile, denn wer ein autonomes System betreibt, sollte beides nie suchen müssen.
+      Seite oben, denn wer ein autonomes System betreibt, sollte beides nie suchen müssen.
     </p>
 
     <figure>
       <img src="mentat-cockpit.png" alt="Dashboard-Übersicht der Mentat-Oberfläche mit Statuskacheln und Betriebsmodus-Anzeige in der Kopfzeile." loading="lazy">
-      <figcaption>Das Cockpit der Owner-Oberfläche: der Fünf-Sekunden-Blick, ob etwas ansteht, etwas nach außen wirkt und der Loop läuft.</figcaption>
+      <figcaption>Das Cockpit: der Fünf-Sekunden-Blick, ob etwas ansteht, etwas nach außen wirkt und alles läuft.</figcaption>
     </figure>
 
     <figure>
       <img src="mentat-inbox.png" alt="Entscheidungs-Inbox mit offenen Freigabe-Anfragen und Optionen zum Genehmigen oder Ablehnen." loading="lazy">
-      <figcaption>Jede Wirkung nach außen läuft durch diese Inbox: kein Listing ohne explizite Owner-Freigabe, jede Entscheidung mit Begründung.</figcaption>
+      <figcaption>Jede Wirkung nach außen läuft durch diese Inbox: Ohne meine Freigabe passiert nichts, und jede Entscheidung wird begründet.</figcaption>
     </figure>
 
     <figure>
-      <img src="mentat-candidates.png" alt="Liste destillierter Nachfrage-Kandidaten aus der Web-Discovery mit Nischen-Begriffen und Fundhäufigkeit." loading="lazy">
-      <figcaption>Discovery in Aktion: aus öffentlichen Foren destillierte Nachfrage-Nischen, reiner Lesebetrieb unter ratifizierten Deckeln.</figcaption>
+      <img src="mentat-candidates.png" alt="Liste destillierter Nachfrage-Kandidaten aus der Web-Recherche mit Nischen-Begriffen und Fundhäufigkeit." loading="lazy">
+      <figcaption>Die Web-Recherche in Aktion: aus öffentlichen Foren herausgefilterte Nachfrage-Nischen, reiner Lesebetrieb mit festen Obergrenzen.</figcaption>
     </figure>
 
     <figure>
       <img src="mentat-cadence.png" alt="Tabellarisches Verlaufsprotokoll der Systemdurchgänge mit Zeitstempel, Art des Durchgangs und Ergebnis." loading="lazy">
-      <figcaption>Das Pass-Log macht jeden Takt des Systems nachvollziehbar. Auch Verweigerungen werden mit benanntem Grund protokolliert.</figcaption>
+      <figcaption>Das Verlaufsprotokoll macht jeden Takt nachvollziehbar. Auch wenn ein Durchgang nichts tut, steht der Grund dabei.</figcaption>
     </figure>
 
     <figure>
       <img src="mentat-products.png" alt="Produktübersicht mit Statusanzeige des Lebenszyklus von Entwurf bis Listung." loading="lazy">
-      <figcaption>Der Produkt-Lebenszyklus: Jedes Artefakt durchläuft benannte Zustände von vorgeschlagen bis gelistet, nichts verschwindet unprotokolliert.</figcaption>
+      <figcaption>Der Produkt-Lebenszyklus: Jedes Produkt durchläuft klare Zustände von vorgeschlagen bis gelistet, nichts verschwindet einfach.</figcaption>
     </figure>
   </div>
 </section>
 
 <section>
   <div class="wrap">
-    <h2>Architektur in Kürze</h2>
+    <h2>Wie das System aufgebaut ist</h2>
     <p>
-      Das System ist in Python (ab 3.12, FastAPI, Postgres, Pydantic) gebaut und streng
-      geschichtet. Zuunterst liegt <strong>L0</strong>, der unveränderliche Kern: Fitness-Funktion,
-      Limits, Gates, Audit-Log und Verifikation, auf Datenbank-Rechte-Ebene gegen jeden
-      Agenten-Schreibzugriff gesperrt, nicht nur per Konvention. Darüber arbeitet die
-      <strong>Kontrollebene</strong>, die Agenten ausführt, jede Außenwirkung durch deterministische
-      Checks führt und alle Web-Zugriffe durch einen Egress-Proxy mit Allowlist und Tagesbudgets
-      zwingt. Die <strong>Agenten-Population</strong> evolviert in getrennten Domänen-Pools
-      (Marktstrategien im Simulator, Web-Discovery, digitale Produkte), deren Erträge in ein
-      gemeinsames, exogen verifiziertes Buch fließen.
+      Mentat ist in Python gebaut (FastAPI, Postgres, Pydantic) und in klare Schichten geteilt.
+      Ganz unten liegt der <strong>unveränderliche Kern</strong>: die Bewertungsregeln, die
+      Limits und das Audit-Log. Der ist über Datenbank-Rechte geschützt, die Agenten haben dort
+      schlicht kein Schreibrecht. Darüber sitzt die <strong>Kontrollebene</strong>: Sie führt
+      die Agenten aus, prüft jede Wirkung nach außen und lässt Web-Zugriffe nur über einen
+      kontrollierten Ausgang mit fester Erlaubnisliste und Tagesbudget.
     </p>
     <p>
-      Eine Besonderheit ist die Bewertungskette: Bevor ein Sprachmodell als Richter über
-      Agenten-Verhalten eingesetzt werden darf, muss es ein Golden Set von 100 vorab beurteilten
-      Fällen bestehen. Und der Mensch sitzt an definierten Gates: Jede Wirkung nach außen braucht
-      eine explizite Freigabe über die Owner-Oberfläche.
+      Die <strong>Agenten</strong> selbst entwickeln sich in drei getrennten Bereichen weiter:
+      Marktstrategien im Simulator, Web-Recherche und digitale Produkte. Was sie erwirtschaften,
+      landet in einem gemeinsamen Buch, und dort zählt nur, was von außen bestätigt wurde, zum
+      Beispiel vom Zahlungsanbieter. Zwei Regeln ziehen sich durch alles: Eine KI darf andere
+      Agenten erst bewerten, wenn sie vorher bewiesen hat, dass ihr Urteil taugt. Und bei jeder
+      Wirkung nach außen sitze ich dazwischen.
     </p>
   </div>
 </section>
@@ -169,76 +169,76 @@
     <h2>Meilensteine</h2>
     <table>
       <tr><th>Stufe</th><th>Meilenstein</th><th>Ergebnis</th></tr>
-      <tr><td>M1</td><td>Trace &amp; Post-Mortem</td><td>Jeder Agenten-Lauf ist vollständig nachvollziehbar aufgezeichnet, und ein kalibrierter LLM-Bewerter (Golden-Set-Gate: 97/100 erst im dritten Anlauf) analysiert Fehlschläge systematisch.</td></tr>
-      <tr><td>M2</td><td>Lessons &amp; Gedächtnis</td><td>Aus Post-Mortems destillierte Lehren werden statistisch validiert (Mindesteffekt d ≥ 0,2 in Replay-A/B-Tests), bevor sie je ein Agent erbt. Unvalidiertes Lernen bleibt draußen.</td></tr>
-      <tr><td>M3</td><td>Evolution</td><td>Die Population evolviert über ein MAP-Elites-Archiv mit Mutationsoperatoren und Ablation; die Fitness-Funktion liegt unveränderbar außerhalb des mutierbaren Bereichs.</td></tr>
-      <tr><td>M4</td><td>Immunsystem &amp; Autonomie</td><td>Drei Domänen evolvieren parallel, Skills werden owner-gated vererbt, die gVisor-Sandbox ist mit einer Ausbruchs-Testsuite belegt, und die L0-Isolation ist auf Datenbank-Ebene bewiesen.</td></tr>
+      <tr><td>M1</td><td>Aufzeichnung &amp; Auswertung</td><td>Jeder Lauf eines Agenten wird komplett aufgezeichnet, und eine geprüfte KI wertet Fehlschläge systematisch aus. Die Prüfung bestand erst der dritte Anlauf, mit 97 von 100 Fällen.</td></tr>
+      <tr><td>M2</td><td>Lernen &amp; Gedächtnis</td><td>Aus Fehlern gelernte Regeln werden erst in Wiederholungs-Tests statistisch bestätigt, bevor ein Agent sie erben darf. Ungeprüftes Lernen bleibt draußen.</td></tr>
+      <tr><td>M3</td><td>Evolution</td><td>Die Agenten verbessern sich über ein Archiv der besten Varianten mit gezielten Mutationen. Die Bewertungsregeln liegen fest außerhalb des veränderbaren Bereichs.</td></tr>
+      <tr><td>M4</td><td>Immunsystem &amp; Autonomie</td><td>Drei Bereiche entwickeln sich parallel, neue Fähigkeiten werden nur nach meiner Freigabe vererbt, und die Sandbox ist mit einer eigenen Ausbruchs-Testreihe belegt.</td></tr>
     </table>
     <p class="muted">
-      Die Entwicklung bis M4 lief vollständig im Modus SIM_ONLY: kein echter Euro, keine
-      Außenwirkung. Seit August 2026 läuft ein eng begrenzter Live-Modus (LIVE_MICRO): reale,
-      aber bewusst kleine Schritte, jede einzelne Außenwirkung hinter menschlicher Freigabe
-      und harten Tagesdeckeln.
+      Bis zum vierten Meilenstein lief alles rein in Simulation: kein echter Euro, keine Wirkung
+      nach außen. Seit August 2026 läuft ein eng begrenzter Live-Modus: echte, aber bewusst
+      kleine Schritte, jede einzelne Aktion nach außen nur mit meiner Freigabe und unter harten
+      Tages-Obergrenzen.
     </p>
   </div>
 </section>
 
 <section>
   <div class="wrap">
-    <h2>Die wichtigsten Architekturentscheidungen</h2>
+    <h2>Die wichtigsten Entscheidungen und warum</h2>
 
     <div class="decision">
-      <h3>Der Maßstab liegt außerhalb des Systems, das er misst</h3>
-      <p>Für jeden Optimierer ist es billiger, die Messlatte zu verbiegen, als besser zu werden. Läge die Fitness-Funktion im mutierbaren Bereich, würde die Evolution zuverlässig auf Maßstab-Manipulation konvergieren, und im Dashboard sähe das wie ein Durchbruch aus. Deshalb ist L0 kein Appell, sondern Postgres-Rechteverwaltung: Jede Agenten-Schreiboperation auf die Kerntabellen wird von der Datenbank selbst abgewiesen.</p>
+      <h3>Der Maßstab liegt außerhalb des Systems</h3>
+      <p>Für jeden Optimierer ist es leichter, die Messlatte zu verbiegen, als besser zu werden. Läge die Bewertung im veränderbaren Bereich, würde das System zuverlässig lernen, die Messung zu manipulieren, und im Dashboard sähe das wie ein Erfolg aus. Deshalb ist der Kern nicht per Regel geschützt, sondern per Datenbank-Recht: Jeden Schreibversuch der Agenten weist die Datenbank selbst ab.</p>
     </div>
 
     <div class="decision">
-      <h3>Kein Agent deklariert seinen eigenen Wert</h3>
-      <p>Die Verifikationsfunktionen haben strukturell keinen Parameter, über den ein Agent einen Betrag hereinreichen könnte. Beweise kommen ausschließlich vom Zahlungsanbieter oder aus dem Simulations-Ledger. Und „nicht verifiziert" ist kein Betrag von null, sondern ein Fehler, sonst wird die Null zur akzeptierten Baseline.</p>
+      <h3>Kein Agent bewertet sich selbst</h3>
+      <p>Die Beweisfunktionen haben schlicht keine Stelle, an der ein Agent einen Betrag eintragen könnte. Was zählt, kommt von außen, etwa vom Zahlungsanbieter. Und fehlt ein Beweis, ist das ein Fehler und keine Null, sonst wird die Null irgendwann zum akzeptierten Normalfall.</p>
     </div>
 
     <div class="decision">
-      <h3>KI-Urteile brauchen ein Eichamt</h3>
-      <p>Ein Sprachmodell darf erst dann Agenten-Verhalten bewerten, wenn es an 100 vorab beurteilten Fällen mindestens 80 Prozent Übereinstimmung zeigt, plus eine Diagonalprüfung dagegen, dass es schlicht immer dasselbe antwortet. Die ersten beiden Fassungen des Golden Sets fielen durch, aus zwei verschiedenen, erst durch die Messung sichtbaren Gründen. Die Schranke wurde nicht gesenkt; das Set wurde besser.</p>
+      <h3>Eine KI muss sich erst beweisen, bevor sie bewerten darf</h3>
+      <p>Bevor ein Sprachmodell das Verhalten der Agenten benoten darf, muss es an 100 vorab beurteilten Fällen mindestens 80 Prozent Übereinstimmung zeigen, plus eine Prüfung dagegen, dass es einfach immer dasselbe antwortet. Die ersten beiden Prüfsätze fielen durch. Die Hürde wurde nicht gesenkt, der Prüfsatz wurde besser.</p>
     </div>
 
     <div class="decision">
-      <h3>Prompt-Injection wird im Typsystem abgewehrt, nicht per Anweisung</h3>
-      <p>Web-Inhalte erreichen Agenten als Typ, der keinen Weg in einen Prompt hat: keine String-Konvertierung, keine Serialisierung, ein einziger Ausgang, der die Daten unübersehbar als nicht vertrauenswürdig markiert. Belegt per Byte-Prüfung ganzer Requests.</p>
+      <h3>Prompt-Injection wird technisch verhindert, nicht per Anweisung</h3>
+      <p>Web-Inhalte erreichen die Agenten als Datentyp, der keinen Weg in einen Prompt hat: keine Umwandlung in Text, ein einziger Ausgang, klar als nicht vertrauenswürdig markiert. Nachgewiesen, indem komplette Anfragen Byte für Byte geprüft wurden.</p>
     </div>
 
     <div class="decision">
-      <h3>Alles Systemgefährdende ist Code, kein Prompt</h3>
-      <p>Limits, Gates und Not-Aus sind deterministische Checks außerhalb der Reichweite der Agenten. Ein Verbot, das nur im Prompt steht, ist genau die Grenze, die ein Optimierer mit genug Generationen findet.</p>
+      <h3>Alles Gefährliche ist Code, kein Prompt</h3>
+      <p>Limits, Freigaben und der Not-Aus sind feste Prüfungen außerhalb der Reichweite der Agenten. Ein Verbot, das nur im Prompt steht, ist genau die Grenze, die ein Optimierer mit genug Anläufen findet.</p>
     </div>
   </div>
 </section>
 
 <section>
   <div class="wrap">
-    <h2>Sicherheit &amp; Governance</h2>
+    <h2>Sicherheit &amp; Kontrolle</h2>
     <p>
-      Die Sicherheits-Story ist mehrschichtig, und jede Schicht ist getestet statt behauptet.
-      Agenten-Code läuft in einer <strong>gVisor-Sandbox</strong>, deren Wände eine eigene
-      Ausbruchs-Testsuite beweisen muss. Deren erster Lauf meldete übrigens 13 grüne Wände, von
-      denen keine geprüft war, weil gar kein Container gestartet war. Aufgefallen ist es nur den
-      Tests, die zusätzlich den ehrlichen Fall prüften. Solche Befunde werden zu
-      Testdesign-Regeln, nicht zu Fußnoten.
+      Jede Sicherheitsschicht ist getestet statt behauptet. Der Code, den Agenten selbst
+      schreiben, läuft in einer <strong>gVisor-Sandbox</strong>, und deren Wände muss eine
+      eigene Ausbruchs-Testreihe beweisen. Deren erster Lauf meldete übrigens 13 grüne Wände,
+      von denen keine geprüft war, weil gar kein Container gestartet war. Aufgefallen ist es
+      nur den Tests, die zusätzlich den Normalfall prüften. Aus solchen Funden werden bei uns
+      Regeln, keine Fußnoten.
     </p>
     <p>
-      Der <strong>Betriebsmodus</strong> ist gestuft (SIM_ONLY, dann LIVE_MICRO), steht in einer
-      für Agentenprozesse nur lesbaren Konfiguration, und unterhalb der Freigabestufe existiert
-      im Code kein Objekt, das nach außen schreiben könnte. Im Live-Modus gilt
-      <strong>Human-in-the-Loop</strong> ohne Ausnahme: Jedes Listing, jede Skill-Vererbung und
-      jede folgenreiche Entscheidung läuft durch eine Freigabe-Inbox mit Bestätigung. Dazu kommen
-      harte <strong>Tagesdeckel</strong> auf jeder Achse (Web-Lesezugriffe, Schreibzugriffe,
-      Inferenz-Aufrufe), die blockieren statt drosseln. Eine Grenze, die nur verzögert, ist eine,
-      die ein Optimierer aussitzt.
+      Der <strong>Betriebsmodus</strong> ist gestuft: erst reine Simulation, jetzt ein eng
+      begrenzter Live-Modus. Die Einstellung liegt in einer Konfiguration, die Agenten nur
+      lesen können, und unterhalb der Freigabestufe gibt es im Code nicht einmal ein Objekt,
+      das nach außen schreiben könnte. Im Live-Modus gilt ausnahmslos
+      <strong>Mensch in der Schleife</strong>: Jedes Listing und jede wichtige Entscheidung
+      läuft über meine Freigabe-Inbox. Dazu kommen harte <strong>Tages-Obergrenzen</strong>
+      für Web-Zugriffe, Schreibaktionen und KI-Aufrufe, die blockieren statt bremsen. Eine
+      Grenze, die nur verzögert, sitzt ein Optimierer aus.
     </p>
     <p>
-      Jede Entwicklungsrunde wird gegen eine vorab fixierte Definition of Done abgenommen,
-      inklusive Mutationstests: Ein Test, der bei absichtlich eingebautem Fehler nicht rot wird,
-      gilt nicht als bestanden, sondern als nicht gestellt.
+      Und jede Entwicklungsrunde wird gegen vorher festgelegte Kriterien abgenommen, inklusive
+      Mutationstests: Ein Test, der bei absichtlich eingebautem Fehler nicht rot wird, gilt
+      nicht als bestanden, sondern als nie gestellt.
     </p>
   </div>
 </section>
@@ -249,13 +249,13 @@
     <table>
       <tr><th>Kennzahl</th><th>Wert (Stand 21.08.2026)</th></tr>
       <tr><td>Python-Code</td><td>~149.000 Zeilen (~68.000 Produktion, ~81.000 Tests)</td></tr>
-      <tr><td>Testfunktionen</td><td>~3.300 (rund 3.950 Testfälle im Unit-Lauf)</td></tr>
-      <tr><td>Architekturentscheidungen (ADRs)</td><td>32, jede mit Begründung und Konsequenzen</td></tr>
+      <tr><td>Testfunktionen</td><td>~3.300 (rund 3.950 Testfälle im Lauf)</td></tr>
+      <tr><td>Architekturentscheidungen</td><td>32, jede mit Begründung dokumentiert</td></tr>
       <tr><td>Arbeitspakete</td><td>27</td></tr>
       <tr><td>Datenbank-Migrationen</td><td>28</td></tr>
       <tr><td>Dokumentierte Runden im Statusprotokoll</td><td>231 Nachträge</td></tr>
       <tr><td>Commits</td><td>~480</td></tr>
-      <tr><td>Qualitätsschranken in CI</td><td>ruff · mypy --strict · pytest inkl. Postgres-Integration · Golden-Set-Regression, alle vier verpflichtend grün</td></tr>
+      <tr><td>Qualitätsschranken in CI</td><td>ruff · mypy --strict · pytest inkl. Postgres-Integration · Golden-Set-Regression, alle vier müssen grün sein</td></tr>
     </table>
   </div>
 </section>
@@ -264,24 +264,23 @@
   <div class="wrap">
     <h2>Meine Rolle, ehrlich</h2>
     <p>
-      Ich schreibe in diesem Projekt keinen Produktionscode; das tun KI-Coding-Agenten. Meine
-      Arbeit ist das, was davor und danach passiert: Ich habe den Prozess entworfen und führe
-      ihn, von den Anforderungen und Meilenstein-Gates über die Ratifikation jeder
-      Architekturentscheidung bis zur Freigabe jeder Außenwirkung und dem Betrieb.
-      Spezifikation, Arbeitspakete und Code-Reviews entstehen in einem von mir geführten
-      Zwei-Instanzen-Prozess: Eine Architektur- und Review-Instanz beauftragt und prüft den
-      Coding-Agenten, jede Runde mit eigenen Mutationstests am Quellcode. Nichts wird ungeprüft
-      gemergt, jede Runde ist protokolliert.
+      Ich schreibe in diesem Projekt keinen Produktionscode; das machen KI-Coding-Agenten.
+      Meine Arbeit ist alles davor und danach: Ich habe den Prozess entworfen und führe ihn.
+      Ich lege die Anforderungen und Meilensteine fest, gebe jede Architekturentscheidung
+      endgültig frei, genehmige jede Wirkung nach außen und betreibe das System. Geprüft wird
+      in zwei Stufen: Eine Review-Instanz beauftragt und kontrolliert den Coding-Agenten, und
+      jede Runde nehme ich mit eigenen Mutationstests am Quellcode ab. Nichts geht ungeprüft
+      ins System, jede Runde ist protokolliert.
     </p>
     <h2 style="margin-top:36px">Was ich daraus gelernt habe</h2>
     <p>
-      Ich habe gelernt, dass die eigentliche Ingenieursleistung bei KI-Systemen nicht im
-      Erzeugen von Code liegt, sondern im Bauen der Kontrollstrukturen, die Fehler sichtbar
-      machen, bevor sie teuer werden. Ich habe gelernt, Misstrauen zu operationalisieren: Kein
-      Bericht wird geglaubt, jeder wird an der Quelle nachgemessen, und die interessantesten
-      Fehler waren immer die, bei denen ein Test grün war, ohne etwas zu prüfen. Und ich habe
-      gelernt, dass Governance kein Bremsklotz ist, sondern die Voraussetzung dafür, einem
-      autonomen System überhaupt reale Verantwortung übergeben zu können.
+      Die eigentliche Ingenieursarbeit bei KI-Systemen ist nicht das Erzeugen von Code, sondern
+      das Bauen der Kontrollen, die Fehler sichtbar machen, bevor sie teuer werden. Ich habe
+      gelernt, Misstrauen in feste Abläufe zu übersetzen: Kein Bericht wird geglaubt, jeder
+      wird an der Quelle nachgemessen. Die spannendsten Fehler waren immer die, bei denen ein
+      Test grün war, ohne etwas zu prüfen. Und ich habe gelernt, dass Kontrolle kein Bremsklotz
+      ist, sondern die Voraussetzung dafür, einem autonomen System echte Verantwortung geben
+      zu können.
     </p>
   </div>
 </section>
