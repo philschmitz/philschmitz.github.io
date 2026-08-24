@@ -303,6 +303,7 @@
       <div class="links">
         <a href="#profil">Profil</a>
         <a href="#mentat">Projekte</a>
+        <a href="mentat.html" style="color:var(--accent);font-weight:700">Mentat Deep Dive</a>
         <a href="#werdegang">Werdegang</a>
         <a href="#skills">Fähigkeiten</a>
         <a href="#kontakt">Kontakt</a>
@@ -759,14 +760,16 @@
   var links = document.querySelectorAll("nav .links a");
   var secs = [];
   links.forEach(function (a) {
-    var s = document.querySelector(a.getAttribute("href"));
+    var href = a.getAttribute("href");
+    if (href.charAt(0) !== "#") return;
+    var s = document.querySelector(href);
     if (s) secs.push({ a: a, s: s });
   });
   if ("IntersectionObserver" in window) {
     var sio = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (en.isIntersecting) {
-          links.forEach(function (l) { l.classList.remove("active"); });
+          secs.forEach(function (x) { x.a.classList.remove("active"); });
           var hit = secs.find(function (x) { return x.s === en.target; });
           if (hit) hit.a.classList.add("active");
         }
